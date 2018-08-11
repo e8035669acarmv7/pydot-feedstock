@@ -10,21 +10,24 @@ source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - windows-bat.patch  # [win]
 
 build:
-  number: 0
+  number: 1
   noarch: python
-  script: python setup.py install --single-version-externally-managed --record=record.txt
+  script: python -m pip install --no-deps --ignore-installed .
 
 requirements:
   build:
-    - python
+    - pip
     - setuptools
-    # Required because of pydot import in setup.py
+    - python
     - pyparsing >=2.1.4
   run:
     - python
     - pyparsing >=2.1.4
+    - graphviz
 
 test:
   imports:
