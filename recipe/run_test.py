@@ -17,11 +17,20 @@ import argparse
 import os
 import pickle
 import string
+import subprocess
 import sys
 
 import pydot
 import unittest
 
+popen_original = subprocess.Popen
+def popen_patched(*args, **kwargs):
+    key = "QEMU_LD_PREFIX"
+    val = os.environ.get(key, None)
+    if val is not None:
+        kwargs["env"][key] = val
+    return popen_original(*args, **kwargs)
+subprocess.Popen = popen_patched
 
 class TestGraphAPI(unittest.TestCase):
 
